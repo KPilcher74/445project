@@ -1,34 +1,44 @@
 const express = require('express');
 const mysql = require('mysql2');
+const cors = require('cors');
+
 
 const app = express();
-const port = 3307;
+app.use(cors());
+app.use(express.json());
 
-// MySQL database connection
 const db = mysql.createConnection({
   host: 'localhost',
-  port: 3306, // Default MySQL port is 3306, change to this if your MySQL server is running on port 3306
   user: 'root',
   password: 'Loki74Lover7474*',
-  database: 'trackapp',
-  connectTimeout: 10000 // 10 seconds
+  database: 'running'
 });
 
-// Connect to the database
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL database: ' + err.stack);
-    return;
-  }
-  console.log('Connected to MySQL database as id ' + db.threadId);
+app.post('/addRun', (req, res) => {
+  const { time, distance } = req.body;
+    const sql = 'INSERT INTO runs (time, distance) VALUES (?, ?)';
+db.query(sql, [time, distance], (err, result) => {
+if (err) throw err;
+res.json({ message: 'Run added successfully' });
+  });
 });
 
-// Define a sample route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get('/getRuns', (req, res) => {
+  const sql = 'SELECT * FROM runs';
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    res.json(result);
+  });
 });
 
-// Start the server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.delete('/clearRuns', (req, res) => {
+  const sql = 'DELETE FROM runs';
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    res.json({ message: 'All runs cleared' });
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
 });

@@ -1,23 +1,36 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Run Details</ion-title>
+    <ion-title>Pace Pioneer</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-item>
-      <ion-label position="floating">Name</ion-label>
-      <ion-input type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Time</ion-label>
-      <ion-input type="text"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Distance</ion-label>
-      <ion-input type="text"></ion-input>
-    </ion-item>
-  </ion-list>
+<ion-content class="ion-padding">
+  <div *ngIf="showForm">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Enter Your Run</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+            <ion-label position="floating">Distance (meters)</ion-label>
+            <ion-input type="number" [(ngModel)]="distance"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="floating">Time (seconds)</ion-label>
+            <ion-input type="number" [(ngModel)]="time" step="0.01"></ion-input>
+        </ion-item>
+        <ion-button expand="block" (click)="addRun()" (touchend)="onEnterTouch($event)" class="enter-button">Enter</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="showGraphAndClear">
+    <!-- Create a canvas for each allowed distance -->
+    <div *ngFor="let distance of allowedDistances; let i = index">
+      <canvas #scatterChart></canvas>
+    </div>
+    <ion-button expand="block" (click)="clearForm()" class="back-button">Back</ion-button>
+  </div>
 </ion-content>
+
 
